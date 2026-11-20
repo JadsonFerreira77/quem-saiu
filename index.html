@@ -154,6 +154,24 @@
       }
       .tip svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
 
+      /* como funciona */
+      .x-how { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px; }
+      @media (min-width: 700px) { .x-how { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      .x-how li { position: relative; padding: 20px 18px; display: grid; gap: 10px; align-content: start; }
+      .x-how__top { display: flex; align-items: center; justify-content: space-between; }
+      .x-how__num { font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; color: #f4f4f8; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+      .x-how__icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--card-strong); border: 1px solid var(--line); }
+      .x-how__icon svg { width: 22px; height: 22px; }
+      .x-how h3 { font-size: 17px; }
+      .x-how p { font-size: 14px; color: var(--muted); }
+      .x-how-note { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 13px; color: var(--muted); }
+      .x-how-note svg { width: 16px; height: 16px; flex: none; }
+
+      /* how-to tabs */
+      .x-howtabs { display: inline-flex; margin-bottom: 18px; }
+      .x-howtabs button svg { width: 15px; height: 15px; }
+      .stepper p b { color: var(--ink); font-weight: 600; }
+
       /* drops */
       .drops { display: grid; gap: 14px; margin-top: 18px; }
       @media (min-width: 700px) { .drops { grid-template-columns: 1fr 1fr; } }
@@ -173,6 +191,13 @@
       .drop input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
       .drop label.btn { cursor: pointer; }
       .drop:has(input:focus-visible) label.btn { outline: 2px solid var(--pink); outline-offset: 3px; }
+      .drop { cursor: pointer; }
+      .x-hint { font-size: 14px; font-weight: 600; color: var(--ink); }
+      .x-hint .x-touch { display: none; }
+      @media (hover: none) and (pointer: coarse) {
+        .x-hint .x-touch { display: inline; }
+        .x-hint .x-mouse { display: none; }
+      }
       .opt { position: absolute; top: 12px; right: 12px; font-size: 12px; padding: 3px 9px; border-radius: var(--pill); border: 1px solid var(--line-strong); color: var(--muted); background: var(--card); }
       .x-files { font-size: 13px; overflow-wrap: anywhere; color: var(--ink); }
       .x-files:empty { display: none; }
@@ -340,21 +365,77 @@
         </div>
       </section>
 
+      <section class="wrap block" id="funciona">
+        <p class="eyebrow">Em 3 passos</p>
+        <h2 class="title">Como funciona</h2>
+        <ol class="x-how">
+          <li class="card">
+            <div class="x-how__top">
+              <span class="x-how__num">1</span>
+              <span class="x-how__icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="0.6" fill="#ec4899" /></svg></span>
+            </div>
+            <h3>Peça seus dados ao Instagram</h3>
+            <p>No app do Instagram, peça o arquivo de Seguidores e seguindo em formato JSON. É grátis e oficial.</p>
+          </li>
+          <li class="card">
+            <div class="x-how__top">
+              <span class="x-how__num">2</span>
+              <span class="x-how__icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg></span>
+            </div>
+            <h3>Baixe o arquivo .zip</h3>
+            <p>O Instagram avisa por e-mail ou notificação quando o arquivo fica pronto (de minutos a algumas horas). Baixe no celular ou no computador.</p>
+          </li>
+          <li class="card">
+            <div class="x-how__top">
+              <span class="x-how__num">3</span>
+              <span class="x-how__icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3m0 0-5 5m5-5 5 5" /><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" /></svg></span>
+            </div>
+            <h3>Envie aqui</h3>
+            <p>Toque em Enviar arquivo, escolha o .zip na pasta Downloads e pronto: a lista aparece na hora.</p>
+          </li>
+        </ol>
+        <p class="x-how-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" /><path d="M11 18h2" /></svg> Funciona no celular, sem instalar nada.</p>
+      </section>
+
       <section class="wrap block" id="como">
         <p class="eyebrow">Passo 1</p>
         <h2 class="title">Peça seus dados ao Instagram, em JSON.</h2>
-        <p class="sub">Leva um minuto para pedir. O Instagram manda o arquivo por e-mail.</p>
-        <details class="acc card">
+        <p class="sub">Leva um minuto para pedir. O Instagram avisa quando o arquivo fica pronto.</p>
+        <details class="acc card" open>
           <summary>Como baixar seus dados do Instagram (2 min)<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary>
           <div class="acc__body">
-            <ol class="stepper">
-              <li><h4>Abra a Central de Contas</h4><p>No app do Instagram, abra seu perfil &gt; menu (☰) &gt; Central de Contas.</p></li>
-              <li><h4>Baixe suas informações</h4><p>Toque em “Suas informações e permissões” &gt; “Baixar suas informações”.</p></li>
-              <li><h4>Escolha só uma parte</h4><p>Escolha “Baixar ou transferir informações” &gt; selecione sua conta &gt; “Algumas das suas informações”.</p></li>
-              <li><h4>Marque “Seguidores e seguindo”</h4><p>Marque apenas “Seguidores e seguindo” (em Conexões).</p></li>
-              <li><h4>Escolha JSON, não HTML</h4><p>Escolha “Baixar no dispositivo”, Intervalo de datas: “Desde o início”, Formato: JSON (importante: não HTML).</p></li>
-              <li><h4>Crie e baixe o .zip</h4><p>Toque em “Criar arquivos”. O Instagram avisa por e-mail quando estiver pronto (geralmente minutos a algumas horas). Baixe o .zip.</p></li>
-            </ol>
+            <div class="tabs x-howtabs" role="tablist" aria-label="Onde baixar" id="how-tabs">
+              <button type="button" role="tab" id="how-tab-cel" aria-controls="how-cel" aria-selected="true" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" /><path d="M11 18h2" /></svg>Pelo celular</button>
+              <button type="button" role="tab" id="how-tab-pc" aria-controls="how-pc" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg>Pelo computador</button>
+            </div>
+            <div role="tabpanel" id="how-cel" aria-labelledby="how-tab-cel">
+              <ol class="stepper">
+                <li><h4>Abra seu perfil</h4><p>Abra o app do Instagram e vá no seu perfil.</p></li>
+                <li><h4>Central de Contas</h4><p>Toque no menu <b>☰</b> (canto superior direito) &gt; <b>Central de Contas</b>.</p></li>
+                <li><h4>Baixar suas informações</h4><p>Toque em <b>Suas informações e permissões</b> &gt; <b>Baixar suas informações</b>.</p></li>
+                <li><h4>Escolha só uma parte</h4><p>Toque em <b>Baixar ou transferir informações</b> &gt; escolha sua conta &gt; <b>Algumas das suas informações</b>.</p></li>
+                <li><h4>Marque “Seguidores e seguindo”</h4><p>Em Conexões, marque só <b>“Seguidores e seguindo”</b> &gt; <b>Avançar</b>.</p></li>
+                <li><h4>Escolha JSON, não HTML</h4><p>Escolha <b>Baixar no dispositivo</b>. Intervalo de datas: <b>Desde o início</b>. Formato: <b>JSON</b> (não HTML). Qualidade de mídia pode ficar baixa.</p></li>
+                <li><h4>Crie os arquivos</h4><p>Toque em <b>Criar arquivos</b>.</p></li>
+                <li><h4>Baixe quando ficar pronto</h4><p>Volte em <b>Central de Contas</b> &gt; <b>Baixar suas informações</b> e toque em <b>Baixar</b> (ou abra o link do e-mail). O Instagram pode pedir sua senha só para confirmar: isso é no site oficial do Instagram, não aqui.</p></li>
+                <li><h4>Ache o .zip</h4><p>O .zip vai para a pasta Downloads (Android: app Arquivos &gt; Downloads; iPhone: app Arquivos &gt; Downloads). Não precisa descompactar.</p></li>
+                <li><h4>Envie aqui</h4><p>Volte aqui, toque em <b>“Dados atuais”</b> e escolha o .zip.</p></li>
+              </ol>
+            </div>
+            <div role="tabpanel" id="how-pc" aria-labelledby="how-tab-pc" hidden>
+              <ol class="stepper">
+                <li><h4>Abra o Instagram no navegador</h4><p>Acesse <b>instagram.com</b> e entre na sua conta.</p></li>
+                <li><h4>Central de Contas</h4><p>Clique em <b>Mais (☰)</b> &gt; <b>Central de Contas</b>.</p></li>
+                <li><h4>Baixar suas informações</h4><p>Clique em <b>Suas informações e permissões</b> &gt; <b>Baixar suas informações</b>.</p></li>
+                <li><h4>Escolha só uma parte</h4><p>Clique em <b>Baixar ou transferir informações</b> &gt; escolha sua conta &gt; <b>Algumas das suas informações</b>.</p></li>
+                <li><h4>Marque “Seguidores e seguindo”</h4><p>Em Conexões, marque só <b>“Seguidores e seguindo”</b> &gt; <b>Avançar</b>.</p></li>
+                <li><h4>Escolha JSON, não HTML</h4><p>Escolha <b>Baixar no dispositivo</b>. Intervalo de datas: <b>Desde o início</b>. Formato: <b>JSON</b> (não HTML). Qualidade de mídia pode ficar baixa.</p></li>
+                <li><h4>Crie os arquivos</h4><p>Clique em <b>Criar arquivos</b>.</p></li>
+                <li><h4>Baixe quando ficar pronto</h4><p>Volte em <b>Central de Contas</b> &gt; <b>Baixar suas informações</b> e clique em <b>Baixar</b> (ou abra o link do e-mail). O Instagram pode pedir sua senha só para confirmar: isso é no site oficial do Instagram, não aqui.</p></li>
+                <li><h4>Ache o .zip</h4><p>O .zip vai para a pasta Downloads do computador. Não precisa descompactar.</p></li>
+                <li><h4>Envie aqui</h4><p>Volte aqui e arraste o .zip para a área <b>“Dados atuais”</b>.</p></li>
+              </ol>
+            </div>
             <div class="tip">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" /></svg>
               <p>Dica: para ver quem deixou de te seguir, guarde esse .zip. Da próxima vez, baixe um novo e envie os dois.</p>
@@ -371,12 +452,13 @@
           <div class="drop" id="drop-cur">
             <span class="drop__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5" /><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg></span>
             <h3>Dados atuais</h3>
-            <p>O .zip do Instagram ou followers_1.json, followers_2.json… e following.json. Arraste aqui ou escolha.</p>
+            <p class="x-hint"><span class="x-touch">Toque para escolher o .zip (pasta Downloads)</span><span class="x-mouse">Arraste o .zip aqui ou clique para escolher</span></p>
+            <p>Também aceita followers_1.json, followers_2.json… e following.json.</p>
             <div class="row-actions">
-              <label class="btn btn--sm" for="file-cur">Escolher arquivos</label>
+              <label class="btn btn--sm" for="file-cur">Enviar arquivo</label>
               <button class="btn btn--ghost btn--sm x-hide" type="button" id="clear-cur">Remover</button>
             </div>
-            <input type="file" id="file-cur" multiple accept=".zip,.json,.html,application/zip,application/json" />
+            <input type="file" id="file-cur" multiple accept=".zip,.json,.html,application/zip,application/x-zip-compressed,application/json,application/octet-stream" />
             <p class="x-files" id="files-cur"></p>
             <p class="x-msg" id="msg-cur" role="status"></p>
           </div>
@@ -384,12 +466,13 @@
             <span class="opt">Opcional</span>
             <span class="drop__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></span>
             <h3>Dados antigos</h3>
+            <p class="x-hint"><span class="x-touch">Toque para escolher o .zip (pasta Downloads)</span><span class="x-mouse">Arraste o .zip aqui ou clique para escolher</span></p>
             <p>Para ver quem deixou de seguir. Um export de antes, nos mesmos formatos: .zip ou .json.</p>
             <div class="row-actions">
-              <label class="btn btn--sm" for="file-old">Escolher arquivos</label>
+              <label class="btn btn--sm" for="file-old">Enviar arquivo</label>
               <button class="btn btn--ghost btn--sm x-hide" type="button" id="clear-old">Remover</button>
             </div>
-            <input type="file" id="file-old" multiple accept=".zip,.json,.html,application/zip,application/json" />
+            <input type="file" id="file-old" multiple accept=".zip,.json,.html,application/zip,application/x-zip-compressed,application/json,application/octet-stream" />
             <p class="x-files" id="files-old"></p>
             <p class="x-msg" id="msg-old" role="status"></p>
           </div>
@@ -462,6 +545,8 @@
           <details class="acc card"><summary>Vocês veem meus dados?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Não. Os arquivos são lidos só no seu navegador e nada é enviado.</div></details>
           <details class="acc card"><summary>Por que não tem login com Instagram?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">O Instagram não permite que apps vejam seguidores nem deixem de seguir automaticamente. Apps que pedem sua senha violam as regras e podem fazer sua conta ser bloqueada.</div></details>
           <details class="acc card"><summary>Por que preciso do arquivo antigo?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">O Instagram não informa quem deixou de seguir. Comparando dois arquivos de datas diferentes, dá pra descobrir.</div></details>
+          <details class="acc card"><summary>Dá pra fazer tudo pelo celular?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Sim. Você pede o arquivo no app do Instagram, baixa o .zip e envia aqui pelo navegador do celular.</div></details>
+          <details class="acc card"><summary>O arquivo demora?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Normalmente de alguns minutos a algumas horas; o Instagram avisa quando estiver pronto.</div></details>
         </div>
       </section>
     </main>
@@ -616,8 +701,11 @@
         async function parseFiles(files, kind) {
           var followers = new Map(), following = new Map(), nF = 0, nG = 0, html = false, sources = [];
           for (var i = 0; i < files.length; i++) {
-            var f = files[i], b = base(f.name);
-            if (/\.zip$/.test(b) || f.type === "application/zip" || f.type === "application/x-zip-compressed") {
+            var f = files[i], b = base(f.name), sniff = "";
+            if (!/\.(zip|json|html?)$/.test(b) && !/zip/i.test(f.type)) {
+              try { var hd = new Uint8Array(await slice(f, 0, 64)); sniff = (hd[0] === 0x50 && hd[1] === 0x4b) ? "zip" : ""; if (!sniff) { var st = new TextDecoder("utf-8").decode(hd).replace(/^\uFEFF/, "").trim().charAt(0); if (st === "{" || st === "[") sniff = "json"; } } catch (e) { sniff = ""; }
+            }
+            if (/\.zip$/.test(b) || /zip/i.test(f.type) || sniff === "zip") {
               var ents;
               try { ents = await zipEntries(f); } catch (e) { throw new Error("Não conseguimos abrir “" + f.name + "”. Baixe o .zip de novo ou envie os arquivos .json soltos."); }
               ents.forEach(function (ent) {
@@ -627,7 +715,7 @@
                   sources.push({ name: eb, named: true, get: (function (file, en) { return function () { return zipRead(file, en).then(function (u) { return new TextDecoder("utf-8").decode(u); }); }; })(f, ent) });
                 }
               });
-            } else if (/\.json$/.test(b)) {
+            } else if (/\.json$/.test(b) || /json/i.test(f.type) || sniff === "json") {
               sources.push({ name: b, named: RE_FOLLOWERS.test(b) || RE_FOLLOWING.test(b), get: (function (file) { return function () { return file.text(); }; })(f) });
             } else if (/\.html?$/.test(b)) {
               html = true;
@@ -658,6 +746,10 @@
         /* ---------- Upload zones ---------- */
         function setupZone(kind) {
           var drop = $("drop-" + kind), input = $("file-" + kind), clear = $("clear-" + kind);
+          drop.addEventListener("click", function (e) {
+            if (e.target.closest("label, button, a, input")) return;
+            input.click();
+          });
           input.addEventListener("change", function () { if (input.files.length) handle(kind, Array.prototype.slice.call(input.files)); input.value = ""; });
           ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("is-over"); }); });
           ["dragleave", "dragend"].forEach(function (t) { drop.addEventListener(t, function (e) { if (!drop.contains(e.relatedTarget)) drop.classList.remove("is-over"); }); });
@@ -891,6 +983,26 @@
 
         setupZone("cur");
         setupZone("old");
+
+        /* ---------- How-to tabs (celular / computador) ---------- */
+        (function () {
+          var tl = $("how-tabs"), btns = Array.prototype.slice.call(tl.querySelectorAll('[role="tab"]'));
+          function pick(b, focus) {
+            btns.forEach(function (x) {
+              var on = x === b;
+              x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1;
+              $(x.getAttribute("aria-controls")).hidden = !on;
+            });
+            if (focus) b.focus();
+          }
+          tl.addEventListener("click", function (e) { var b = e.target.closest('[role="tab"]'); if (b) pick(b); });
+          tl.addEventListener("keydown", function (e) {
+            if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+            var i = btns.indexOf(document.activeElement); if (i < 0) return;
+            pick(btns[(i + (e.key === "ArrowRight" ? 1 : -1) + btns.length) % btns.length], true);
+            e.preventDefault();
+          });
+        })();
       })();
     </script>
   </body>
