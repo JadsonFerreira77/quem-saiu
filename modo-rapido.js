@@ -224,24 +224,27 @@
       var im = ev.target; if (!im || im.tagName !== 'IMG' || im.dataset.f) return; im.dataset.f = '1';
       var sp = document.createElement('span'); sp.className = 'qs-av'; sp.textContent = im.dataset.l || '?'; im.replaceWith(sp);
     }, true);
+    async function seguindo(id) {
+      try { var c = await fetch('/api/v1/friendships/show/' + id + '/', { credentials: 'include', headers: { 'X-IG-App-ID': APP_ID, 'X-ASBD-ID': '359341', 'X-Requested-With': 'XMLHttpRequest' }, cache: 'no-store' }); if (!c.ok) return null; var cj = await c.json(); return typeof cj.following === 'boolean' ? cj.following : null; } catch (e) { return null; }
+    }
     async function deixar(id) {
-      var h = { 'X-IG-App-ID': APP_ID, 'X-CSRFToken': cookie('csrftoken') || '', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' };
+      var h = { 'X-IG-App-ID': APP_ID, 'X-ASBD-ID': '359341', 'X-CSRFToken': cookie('csrftoken') || '', 'X-Requested-With': 'XMLHttpRequest', 'X-Instagram-AJAX': '1', 'Content-Type': 'application/x-www-form-urlencoded' };
       var claim = sessionStorage.getItem('www-claim-v2'); if (claim) h['X-IG-WWW-Claim'] = claim;
       var tent = [
-        ['/api/v1/friendships/destroy/' + id + '/', 'container_module=profile&nav_chain=&user_id=' + encodeURIComponent(id)],
+        ['/api/v1/friendships/destroy/' + id + '/', 'container_module=profile&nav_chain=PolarisProfilePostsTabRoot%3AprofilePage%3A1%3Avia_cold_start&user_id=' + encodeURIComponent(id)],
         ['/web/friendships/' + id + '/unfollow/', '']
       ], ult = 0;
       for (var i = 0; i < tent.length; i++) {
-        var r = await fetch(tent[i][0], { method: 'POST', credentials: 'include', headers: h, body: tent[i][1] });
+        var r; try { r = await fetch(tent[i][0], { method: 'POST', credentials: 'include', headers: h, body: tent[i][1] }); } catch (e) { continue; }
         ult = r.status;
         if (r.status === 429) return { s: 429 };
         if (r.ok) {
-          var j = null; try { j = await r.json(); } catch (e) {}
-          if (!j || j.status === 'ok' || (j.friendship_status && j.friendship_status.following === false)) return { s: 200 };
+          await sleep(1500);
+          var f = await seguindo(id);
+          if (f === false) return { s: 200 };   // conferido: deixou mesmo
+          if (f === true) ult = 'ainda seguindo';
         }
       }
-      // confere se deixou mesmo
-      try { var c = await fetch('/api/v1/friendships/show/' + id + '/', { credentials: 'include', headers: { 'X-IG-App-ID': APP_ID } }); var cj = await c.json(); if (cj.following === false) return { s: 200 }; } catch (e) {}
       return { s: ult || 0 };
     }
     body.addEventListener('click', async function (ev) {
@@ -259,7 +262,7 @@
         if (r.s !== 200) throw new Error('código ' + r.s);
         reg.c++; reg.t = Date.now(); lsSet(KEY_UNF, reg); feitos[u] = 1; row.classList.add('done'); b.textContent = 'Feito';
         toast('Pronto. Hoje: ' + reg.c + ' de ' + UNF_LIMITE_DIA + '.');
-      } catch (e) { b.disabled = false; b.textContent = 'Deixar de seguir'; alert('Quem Saiu?: o Instagram não aceitou deixar de seguir @' + u + ' (' + (e && e.message) + '). Mande um print disso. Por enquanto, abra o perfil e deixe de seguir por lá.'); }
+      } catch (e) { b.disabled = false; b.textContent = 'Deixar de seguir'; alert('Quem Saiu?: o Instagram não deixou de seguir @' + u + ' (' + (e && e.message) + '). Vou abrir o perfil: toque em "Seguindo" > "Deixar de seguir".'); window.open('https://www.instagram.com/' + u + '/', '_blank'); }
     });
     render();
   }
