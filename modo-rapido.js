@@ -3,9 +3,33 @@
  * Só leitura por padrão. Deixar de seguir: 1 clique por pessoa, com intervalo mínimo e limite diário.
  * Código aberto: https://github.com/JadsonFerreira77/quem-saiu
  */
-(function () {
+(function () { try { (function () {
   'use strict';
   if (window.__quemSaiuAberto) { return; }
+
+  var TTP = null;
+  try { if (window.trustedTypes && trustedTypes.createPolicy) { TTP = trustedTypes.createPolicy('quemsaiu', { createHTML: function (x) { return x; } }); } } catch (e) { TTP = null; }
+  function decEnt(t) { return t.replace(/&(amp|lt|gt|quot|#39|nbsp);/g, function (_, k) { return { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", nbsp: '\u00a0' }[k]; }); }
+  function parseH(el, html) {
+    var VOID = { br: 1, img: 1, input: 1, hr: 1, meta: 1, link: 1 };
+    var stack = [el], re = /<\/?([a-zA-Z][\w-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>|([^<]+)/g, m;
+    while ((m = re.exec(html))) {
+      var top = stack[stack.length - 1];
+      if (m[3] !== undefined) { top.appendChild(document.createTextNode(decEnt(m[3]))); continue; }
+      var tag = m[1].toLowerCase();
+      if (m[0].charAt(1) === '/') { for (var k = stack.length - 1; k > 0; k--) { if (stack[k].tagName.toLowerCase() === tag) { stack.length = k; break; } } continue; }
+      var e = document.createElement(tag), ar = /([\w:-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g, a;
+      while ((a = ar.exec(m[2]))) { if (/^on/i.test(a[1])) continue; e.setAttribute(a[1], decEnt(a[2] !== undefined ? a[2] : a[3] !== undefined ? a[3] : a[4] !== undefined ? a[4] : '')); }
+      top.appendChild(e);
+      if (!VOID[tag] && !/\/\s*$/.test(m[2])) stack.push(e);
+    }
+  }
+  function setH(el, html) {
+    html = String(html);
+    try { el.innerHTML = TTP ? TTP.createHTML(html) : html; return; } catch (e) { }
+    while (el.firstChild) el.removeChild(el.firstChild);
+    parseH(el, html);
+  }
   if (!/(^|\.)instagram\.com$/.test(location.hostname)) {
     alert('Quem Saiu?: abra o instagram.com no navegador, entre na sua conta e toque no favorito de novo.');
     return;
@@ -16,11 +40,11 @@
   window.__quemSaiuAberto = true;
 
   var APP_ID = '936619743392459';
-  var PAGE = 25;                 // pessoas por consulta
-  var DELAY_MIN = 1500, DELAY_MAX = 3500; // pausa aleatória entre consultas (ms)
-  var PAUSA_LONGA_CADA = 10;     // a cada 10 consultas...
-  var PAUSA_LONGA = 15000;       // ...pausa de 15 s
-  var ESPERA_429 = 120000;       // se o Instagram pedir para esperar: 2 min
+  var PAGE = 50;                 // pessoas por consulta
+  var DELAY_MIN = 900, DELAY_MAX = 2000; // pausa aleatória entre consultas (ms)
+  var PAUSA_LONGA_CADA = 15;     // a cada 15 consultas...
+  var PAUSA_LONGA = 8000;        // ...pausa de ~8 s
+  var ESPERA_429 = 90000;        // se o Instagram pedir para esperar: 1,5 min (dobra se repetir)
   var MAX_TENTATIVAS = 3;
   var UNF_INTERVALO = 40000;     // mínimo 40 s entre "deixar de seguir"
   var UNF_LIMITE_DIA = 100;      // máximo por dia
@@ -46,7 +70,8 @@
     '.qs-stat{background:#151520;border:1px solid #24243a;border-radius:14px;padding:10px}.qs-stat b{font-size:22px;display:block}' +
     '#qs-tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 0}.qs-tab{white-space:nowrap;border-radius:999px;padding:8px 12px;min-height:40px;border:1px solid #2c2c3a;background:#1c1c28;color:#F4F4F8;cursor:pointer;font-weight:600}' +
     '.qs-tab.on{background:linear-gradient(90deg,#7C3AED,#EC4899);border-color:transparent}' +
-    '.qs-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1f1f2c}.qs-row img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#2a2a3a}' +
+    '.qs-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1f1f2c}.qs-row img,.qs-av{width:40px;height:40px;flex:0 0 40px;border-radius:50%;object-fit:cover;background:#2a2a3a}' +
+    '.qs-av{display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;background:linear-gradient(135deg,#7C3AED,#EC4899,#F59E0B)}' +
     '.qs-row .nm{flex:1;min-width:0}.qs-row .nm a{color:#F4F4F8;font-weight:700;text-decoration:none}.qs-row .nm div{color:#A1A1B5;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '.qs-row.done{opacity:.45}.qs-row.done a{text-decoration:line-through}.qs-sm{padding:8px 12px;min-height:36px;font-size:13px}' +
     '#qs-q{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #2c2c3a;background:#12121c;color:#F4F4F8;font-size:15px}' +
@@ -54,16 +79,38 @@
     '#qs-toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#22222f;color:#fff;padding:10px 16px;border-radius:999px;display:none;z-index:2147483647}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   var ov = document.createElement('div'); ov.id = 'qs-ov';
-  ov.innerHTML = '<div id="qs-hd"><b>Quem Saiu?</b><span class="qs-mut">modo rápido</span><span class="sp"></span><button class="qs-btn qs-gh" id="qs-x">Fechar</button></div><div id="qs-body"></div><div id="qs-toast"></div>';
+  setH(ov, '<div id="qs-hd"><b>Quem Saiu?</b><span class="qs-mut">modo rápido</span><span class="sp"></span><button class="qs-btn qs-gh" id="qs-x">Fechar</button></div><div id="qs-body"></div><div id="qs-toast"></div>');
   document.body.appendChild(ov);
   var body = ov.querySelector('#qs-body');
   ov.querySelector('#qs-x').onclick = function () { parar = true; ov.remove(); st.remove(); window.__quemSaiuAberto = false; };
   function toast(t) { var e = ov.querySelector('#qs-toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { e.style.display = 'none'; }, 2500); }
 
-  body.innerHTML = '<div class="qs-card"><b>Lendo suas listas com calma</b><div class="qs-mut" id="qs-st">Começando…</div><div class="qs-bar"><i id="qs-pb"></i></div>' +
+  setH(body, '<div class="qs-card"><b>Lendo suas listas com calma</b><div class="qs-mut" id="qs-st">Começando…</div><div class="qs-bar"><i id="qs-pb"></i></div>' +
     '<p class="qs-mut">Isso pode levar alguns minutos: o Quem Saiu? faz pausas para não parecer robô. Deixe esta aba aberta.</p>' +
-    '<button class="qs-btn qs-gh" id="qs-stop">Parar</button></div>';
+    '<button class="qs-btn qs-gh" id="qs-stop">Parar</button></div>' +
+    '<div class="qs-card qs-cur"><div class="qs-mut">💡 Você sabia?</div><div id="qs-cur" style="margin-top:6px;font-size:16px"></div></div>');
   body.querySelector('#qs-stop').onclick = function () { parar = true; };
+  var CURIOSIDADES = [
+    'O Instagram foi lançado em 6 de outubro de 2010, só para iPhone.',
+    'O nome junta "instant camera" (câmera instantânea) com "telegram".',
+    'O Facebook comprou o Instagram em 2012 por cerca de 1 bilhão de dólares.',
+    'A versão para Android só chegou em abril de 2012.',
+    'Os Stories chegaram ao Instagram em agosto de 2016.',
+    'Os Reels foram lançados em agosto de 2020.',
+    'Você pode seguir no máximo 7.500 contas no Instagram.',
+    'A bio do Instagram aceita até 150 caracteres.',
+    'O nome de usuário pode ter no máximo 30 caracteres.',
+    'Em 2019, a foto de um ovo (@world_record_egg) virou a postagem mais curtida do Instagram.',
+    'A conta mais seguida do Instagram é a do próprio Instagram.',
+    'Cristiano Ronaldo é a pessoa mais seguida do Instagram.',
+    'Até 2015, toda foto no Instagram tinha que ser quadrada.',
+    'Dica: deixar de seguir muita gente de uma vez pode bloquear sua conta por um tempo. Vá com calma.',
+    'Dica: rode o modo rápido de novo daqui a uns dias para ver quem deixou de te seguir.'
+  ];
+  var curI = rnd(0, CURIOSIDADES.length);
+  function trocaCur() { var c = body.querySelector('#qs-cur'); if (!c) { clearInterval(curT); return; } c.textContent = CURIOSIDADES[curI++ % CURIOSIDADES.length]; }
+  trocaCur(); var curT = setInterval(trocaCur, 8000);
+  var t0 = Date.now();
   function status(t, pct) { var s = body.querySelector('#qs-st'); if (s) s.textContent = t; var p = body.querySelector('#qs-pb'); if (p && pct != null) p.style.width = Math.min(100, pct) + '%'; }
 
   /* ---------- Leitura ---------- */
@@ -75,7 +122,7 @@
       try { r = await fetch(url, { credentials: 'include', headers: { 'X-IG-App-ID': APP_ID, 'X-Requested-With': 'XMLHttpRequest' } }); }
       catch (e) { await sleep(10000); continue; }
       if (r.ok) { return r.json(); }
-      if (r.status === 429 || r.status === 400 || r.status === 401) {
+      if (r.status === 429 || r.status === 400 || r.status === 401 || r.status === 560) {
         var fim = Date.now() + ESPERA_429 * (t + 1);
         while (Date.now() < fim) { if (parar) throw new Error('parado'); status('O Instagram pediu uma pausa. Retomando em ' + Math.ceil((fim - Date.now()) / 1000) + ' s…'); await sleep(1000); }
         continue;
@@ -92,7 +139,8 @@
       var j = await getJSON(url);
       (j.users || []).forEach(function (u) { out.push({ id: String(u.pk_id || u.pk || u.id), u: String(u.username).toLowerCase(), n: u.full_name || '', p: u.profile_pic_url || '', v: !!u.is_verified }); });
       var pct = total ? out.length / total : 0;
-      status('Lendo ' + nome + ': ' + out.length + (total ? ' de ' + total : ''), (base + Math.min(1, pct) * peso) * 100);
+      var gpct = base + Math.min(1, pct) * peso, seg = (Date.now() - t0) / 1000, resta = gpct > 0.05 ? Math.round(seg / gpct - seg) : 0;
+      status('Lendo ' + nome + ': ' + out.length + (total ? ' de ' + total : '') + (resta > 0 ? ' · falta ~' + (resta >= 90 ? Math.round(resta / 60) + ' min' : resta + ' s') : ''), gpct * 100);
       max = j.next_max_id;
       if (!max) break;
       consultas++;
@@ -111,7 +159,7 @@
       if (info) status('Conta @' + info.username + ': ' + nF + ' seguidores, ' + nG + ' seguindo', 2);
       var peso = (nF + nG) ? nF / (nF + nG) : 0.5;
       dados.followers = await lerLista('followers', nF, 0, peso);
-      await sleep(rnd(3000, 6000));
+      await sleep(rnd(1500, 3000));
       dados.following = await lerLista('following', nG, peso, 1 - peso);
       mostrar();
     } catch (e) {
@@ -136,14 +184,14 @@
     var feitos = {};
     var abas = [['nao', 'Não me seguem de volta'], ['fas', 'Eu não sigo de volta'], ['sairam', 'Deixaram de me seguir'], ['novos', 'Novos seguidores']];
     var atual = 'nao';
-    body.innerHTML = '<div class="qs-stats">' +
+    setH(body, '<div class="qs-stats">' +
       '<div class="qs-stat"><b>' + dados.followers.length + '</b><span class="qs-mut">Seguidores</span></div>' +
       '<div class="qs-stat"><b>' + dados.following.length + '</b><span class="qs-mut">Seguindo</span></div>' +
       '<div class="qs-stat"><b>' + listas.nao.length + '</b><span class="qs-mut">Não te seguem de volta</span></div>' +
       '<div class="qs-stat"><b>' + (listas.sairam ? listas.sairam.length : '–') + '</b><span class="qs-mut">Deixaram de seguir' + (desde ? ' desde ' + esc(desde) : '') + '</span></div></div>' +
       '<div id="qs-tabs"></div><input id="qs-q" placeholder="Buscar @usuário"><div class="qs-mut" id="qs-info" style="margin:8px 0"></div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="qs-btn qs-gh qs-sm" id="qs-copy">Copiar lista</button><button class="qs-btn qs-gh qs-sm" id="qs-csv">Baixar CSV</button></div>' +
-      '<div id="qs-warn"></div><div id="qs-list"></div>';
+      '<div id="qs-warn"></div><div id="qs-list"></div>');
     var tabs = body.querySelector('#qs-tabs');
     abas.forEach(function (a) {
       var b = document.createElement('button'); b.className = 'qs-tab'; b.dataset.k = a[0];
@@ -157,14 +205,38 @@
     function render() {
       [].forEach.call(tabs.children, function (b) { b.classList.toggle('on', b.dataset.k === atual); });
       var L = body.querySelector('#qs-list'), info = body.querySelector('#qs-info'), w = body.querySelector('#qs-warn');
-      w.innerHTML = atual === 'nao' ? '<div class="qs-warn">Para não ser bloqueado: o botão "Deixar de seguir" espera ' + (UNF_INTERVALO / 1000) + ' s entre um e outro e para em ' + UNF_LIMITE_DIA + ' por dia. Você também pode abrir o perfil e deixar de seguir pelo app.</div>' : '';
-      if (!listas[atual]) { info.textContent = ''; L.innerHTML = '<div class="qs-card qs-mut">Esta é a sua primeira leitura. Na próxima vez que usar o modo rápido neste navegador, aqui aparece quem deixou de te seguir e quem começou.</div>'; return; }
+      setH(w, atual === 'nao' ? '<div class="qs-warn">Para não ser bloqueado: o botão "Deixar de seguir" espera ' + (UNF_INTERVALO / 1000) + ' s entre um e outro e para em ' + UNF_LIMITE_DIA + ' por dia. Você também pode abrir o perfil e deixar de seguir pelo app.</div>' : '');
+      if (!listas[atual]) { info.textContent = ''; setH(L, '<div class="qs-card qs-mut">Esta é a sua primeira leitura. Na próxima vez que usar o modo rápido neste navegador, aqui aparece quem deixou de te seguir e quem começou.</div>'); return; }
       var v = visiveis(); info.textContent = v.length + ' pessoas';
-      L.innerHTML = v.slice(0, 1000).map(function (x) {
-        return '<div class="qs-row' + (feitos[x.u] ? ' done' : '') + '" data-u="' + esc(x.u) + '">' + (x.p ? '<img src="' + esc(x.p) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<img alt="">') +
+      setH(L, v.slice(0, 1000).map(function (x) {
+        return '<div class="qs-row' + (feitos[x.u] ? ' done' : '') + '" data-u="' + esc(x.u) + '">' + (x.p ? '<img src="' + esc(x.p) + '" alt="" loading="lazy" data-l="' + esc(x.u.charAt(0).toUpperCase()) + '">' : '<span class="qs-av">' + esc(x.u.charAt(0).toUpperCase()) + '</span>') +
           '<div class="nm"><a href="https://www.instagram.com/' + esc(x.u) + '/" target="_blank" rel="noopener">@' + esc(x.u) + (x.v ? ' ✔' : '') + '</a><div>' + esc(x.n) + '</div></div>' +
           (atual === 'nao' ? '<button class="qs-btn qs-sm" data-unf="' + esc(x.id) + '"' + (feitos[x.u] ? ' disabled' : '') + '>' + (feitos[x.u] ? 'Feito' : 'Deixar de seguir') + '</button>' : '') + '</div>';
-      }).join('') + (v.length > 1000 ? '<div class="qs-mut">Mostrando 1000. Use a busca para achar os outros.</div>' : '');
+      }).join('') + (v.length > 1000 ? '<div class="qs-mut">Mostrando 1000. Use a busca para achar os outros.</div>' : ''));
+    }
+    body.addEventListener('error', function (ev) {
+      var im = ev.target; if (!im || im.tagName !== 'IMG' || im.dataset.f) return; im.dataset.f = '1';
+      var sp = document.createElement('span'); sp.className = 'qs-av'; sp.textContent = im.dataset.l || '?'; im.replaceWith(sp);
+    }, true);
+    async function deixar(id) {
+      var h = { 'X-IG-App-ID': APP_ID, 'X-CSRFToken': cookie('csrftoken') || '', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' };
+      var claim = sessionStorage.getItem('www-claim-v2'); if (claim) h['X-IG-WWW-Claim'] = claim;
+      var tent = [
+        ['/api/v1/friendships/destroy/' + id + '/', 'container_module=profile&nav_chain=&user_id=' + encodeURIComponent(id)],
+        ['/web/friendships/' + id + '/unfollow/', '']
+      ], ult = 0;
+      for (var i = 0; i < tent.length; i++) {
+        var r = await fetch(tent[i][0], { method: 'POST', credentials: 'include', headers: h, body: tent[i][1] });
+        ult = r.status;
+        if (r.status === 429) return { s: 429 };
+        if (r.ok) {
+          var j = null; try { j = await r.json(); } catch (e) {}
+          if (!j || j.status === 'ok' || (j.friendship_status && j.friendship_status.following === false)) return { s: 200 };
+        }
+      }
+      // confere se deixou mesmo
+      try { var c = await fetch('/api/v1/friendships/show/' + id + '/', { credentials: 'include', headers: { 'X-IG-App-ID': APP_ID } }); var cj = await c.json(); if (cj.following === false) return { s: 200 }; } catch (e) {}
+      return { s: ult || 0 };
     }
     body.addEventListener('click', async function (ev) {
       var b = ev.target.closest('[data-unf]'); if (!b) return;
@@ -176,13 +248,13 @@
       if (!confirm('Deixar de seguir @' + u + '?')) return;
       b.disabled = true; b.textContent = '…';
       try {
-        var r = await fetch('/api/v1/friendships/destroy/' + b.dataset.unf + '/', { method: 'POST', credentials: 'include', headers: { 'X-IG-App-ID': APP_ID, 'X-CSRFToken': cookie('csrftoken') || '', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'user_id=' + encodeURIComponent(b.dataset.unf) });
-        if (r.status === 429 || r.status === 400) { reg.t = Date.now() + 3600000; lsSet(KEY_UNF, reg); toast('O Instagram pediu uma pausa. Espere pelo menos 1 hora.'); b.disabled = false; b.textContent = 'Deixar de seguir'; return; }
-        if (!r.ok) throw new Error(r.status);
+        var r = await deixar(b.dataset.unf);
+        if (r.s === 429) { reg.t = Date.now() + 3600000; lsSet(KEY_UNF, reg); toast('O Instagram pediu uma pausa. Espere pelo menos 1 hora.'); b.disabled = false; b.textContent = 'Deixar de seguir'; return; }
+        if (r.s !== 200) throw new Error('código ' + r.s);
         reg.c++; reg.t = Date.now(); lsSet(KEY_UNF, reg); feitos[u] = 1; row.classList.add('done'); b.textContent = 'Feito';
         toast('Pronto. Hoje: ' + reg.c + ' de ' + UNF_LIMITE_DIA + '.');
-      } catch (e) { b.disabled = false; b.textContent = 'Deixar de seguir'; toast('Não deu agora. Tente pelo perfil.'); }
+      } catch (e) { b.disabled = false; b.textContent = 'Deixar de seguir'; alert('Quem Saiu?: o Instagram não aceitou deixar de seguir @' + u + ' (' + (e && e.message) + '). Mande um print disso. Por enquanto, abra o perfil e deixe de seguir por lá.'); }
     });
     render();
   }
-})();
+})(); } catch (e) { alert('Quem Saiu?: erro ao abrir (' + (e && e.message) + '). Mande um print disso.'); } })();
