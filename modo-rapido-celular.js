@@ -27,11 +27,15 @@
     var BTN = 'border:0;border-radius:999px;padding:12px 16px;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(90deg,#7C3AED,#EC4899,#F59E0B);margin-right:8px';
     var ov = el('div', 'position:fixed;inset:0;z-index:2147483647;background:#0B0B14;color:#F4F4F8;font:15px/1.4 -apple-system,Roboto,sans-serif;padding:18px;overflow:auto');
     ov.appendChild(el('div', 'font-size:20px;font-weight:800;margin-bottom:6px', 'Quem Saiu? – primeira vez'));
-    ov.appendChild(el('div', 'color:#A1A1B5;margin-bottom:12px', 'Cole aqui o código completo (copiado no site em "Copiar código completo") e toque em Abrir. Só precisa fazer isso uma vez.'));
+    ov.appendChild(el('div', 'color:#A1A1B5;margin-bottom:12px', '1) Toque em Pegar código e depois em Copiar. 2) Volte para esta aba, toque em Colar e em Abrir. Só precisa fazer isso uma vez.'));
     var ta = el('textarea', 'width:100%;height:140px;border-radius:12px;border:1px solid #2c2c3a;background:#12121c;color:#F4F4F8;padding:10px;font-size:13px;box-sizing:border-box');
     ta.placeholder = 'Toque e segure aqui > Colar';
     ov.appendChild(ta);
     var row = el('div', 'margin-top:12px');
+    var bPeg = el('button', BTN, 'Pegar código');
+    bPeg.style.display = 'block'; bPeg.style.marginBottom = '12px';
+    ov.insertBefore(bPeg, ta);
+    bPeg.onclick = function () { window.open('https://quemsaiu.vercel.app/#copiar', '_blank'); };
     var bCol = el('button', BTN.replace(/background:[^;]+/, 'background:#1c1c28'), 'Colar');
     var bAbr = el('button', BTN, 'Abrir');
     var bX = el('button', BTN.replace(/background:[^;]+/, 'background:#1c1c28'), 'Fechar');
