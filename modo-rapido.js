@@ -79,9 +79,10 @@
     '#qs-toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#22222f;color:#fff;padding:10px 16px;border-radius:999px;display:none;z-index:2147483647}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   var ov = document.createElement('div'); ov.id = 'qs-ov';
-  setH(ov, '<div id="qs-hd"><b>Quem Saiu?</b><span class="qs-mut">modo rápido</span><span class="sp"></span><button class="qs-btn qs-gh" id="qs-x">Fechar</button></div><div id="qs-body"></div><div id="qs-toast"></div>');
+  setH(ov, '<div id="qs-hd"><b>Quem Saiu?</b><span class="qs-mut">modo rápido</span><span class="sp"></span><button class="qs-btn qs-gh qs-sm" id="qs-up" title="Use depois de copiar o código novo no site">Atualizar</button><button class="qs-btn qs-gh" id="qs-x">Fechar</button></div><div id="qs-body"></div><div id="qs-toast"></div>');
   document.body.appendChild(ov);
   var body = ov.querySelector('#qs-body');
+  ov.querySelector('#qs-up').onclick = function () { try { localStorage.removeItem('quemsaiu_code'); } catch (e) {} alert('Pronto. No site, copie o código completo de novo e toque no favorito: ele vai pedir para colar.'); };
   ov.querySelector('#qs-x').onclick = function () { parar = true; ov.remove(); st.remove(); window.__quemSaiuAberto = false; };
   function toast(t) { var e = ov.querySelector('#qs-toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { e.style.display = 'none'; }, 2500); }
 
