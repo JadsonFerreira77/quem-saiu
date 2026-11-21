@@ -91,21 +91,26 @@
     '<div class="qs-card qs-cur"><div class="qs-mut">💡 Você sabia?</div><div id="qs-cur" style="margin-top:6px;font-size:16px"></div></div>');
   body.querySelector('#qs-stop').onclick = function () { parar = true; };
   var CURIOSIDADES = [
-    'O Instagram foi lançado em 6 de outubro de 2010, só para iPhone.',
-    'O nome junta "instant camera" (câmera instantânea) com "telegram".',
-    'O Facebook comprou o Instagram em 2012 por cerca de 1 bilhão de dólares.',
-    'A versão para Android só chegou em abril de 2012.',
-    'Os Stories chegaram ao Instagram em agosto de 2016.',
-    'Os Reels foram lançados em agosto de 2020.',
+    'O polvo tem três corações e sangue azul.',
+    'Mel não estraga: já acharam mel comestível em tumbas do Egito antigo.',
+    'Um dia em Vênus dura mais que um ano em Vênus.',
+    'A Amazônia tem cerca de 390 bilhões de árvores.',
+    'O Brasil é o único país onde se fala português na América do Sul.',
+    'Os tubarões existem há mais tempo que as árvores.',
+    'A Torre Eiffel fica uns 15 cm mais alta no verão, por causa do calor.',
+    'Bananas são levemente radioativas, por causa do potássio.',
+    'O corpo humano tem cerca de 206 ossos.',
+    'Uma colher de chá de estrela de nêutrons pesaria bilhões de toneladas.',
+    'Os flamingos são rosa por causa do que comem.',
+    'O Monte Everest cresce alguns milímetros por ano.',
+    'As vacas têm melhores amigas e ficam estressadas quando são separadas.',
+    'A luz do Sol leva cerca de 8 minutos para chegar à Terra.',
+    'Os coalas dormem até 20 horas por dia.',
+    'O Rio Amazonas despeja no mar mais água que qualquer outro rio do mundo.',
+    'O Instagram foi lançado em 6 de outubro de 2010.',
     'Você pode seguir no máximo 7.500 contas no Instagram.',
-    'A bio do Instagram aceita até 150 caracteres.',
-    'O nome de usuário pode ter no máximo 30 caracteres.',
-    'Em 2019, a foto de um ovo (@world_record_egg) virou a postagem mais curtida do Instagram.',
-    'A conta mais seguida do Instagram é a do próprio Instagram.',
-    'Cristiano Ronaldo é a pessoa mais seguida do Instagram.',
-    'Até 2015, toda foto no Instagram tinha que ser quadrada.',
-    'Dica: deixar de seguir muita gente de uma vez pode bloquear sua conta por um tempo. Vá com calma.',
-    'Dica: rode o modo rápido de novo daqui a uns dias para ver quem deixou de te seguir.'
+    'As formigas não dormem como nós: tiram centenas de cochilos de 1 minuto por dia.',
+    'Um raio é cerca de 5 vezes mais quente que a superfície do Sol.'
   ];
   var curI = rnd(0, CURIOSIDADES.length);
   function trocaCur() { var c = body.querySelector('#qs-cur'); if (!c) { clearInterval(curT); return; } c.textContent = CURIOSIDADES[curI++ % CURIOSIDADES.length]; }
