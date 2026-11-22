@@ -1,6 +1,6 @@
 # Quem Saiu?
 
-Site: https://quemsaiu.vercel.app
+Site: https://quemsaiu.app.br (também em https://quemsaiu.vercel.app)
 
 Ferramenta web gratuita para descobrir, no Instagram:
 

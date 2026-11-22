@@ -35,7 +35,7 @@
     var bPeg = el('button', BTN, 'Pegar código');
     bPeg.style.display = 'block'; bPeg.style.marginBottom = '12px';
     ov.insertBefore(bPeg, ta);
-    bPeg.onclick = function () { window.open('https://quemsaiu.vercel.app/#copiar', '_blank'); };
+    bPeg.onclick = function () { window.open('https://quemsaiu.app.br/#copiar', '_blank'); };
     var bCol = el('button', BTN.replace(/background:[^;]+/, 'background:#1c1c28'), 'Colar');
     var bAbr = el('button', BTN, 'Abrir');
     var bX = el('button', BTN.replace(/background:[^;]+/, 'background:#1c1c28'), 'Fechar');
