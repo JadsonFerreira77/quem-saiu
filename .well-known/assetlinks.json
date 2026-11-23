@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "br.app.quemsaiu.twa",
+    "sha256_cert_fingerprints": ["4D:34:3A:85:87:19:D4:6A:40:F2:21:42:1A:27:41:A7:60:F4:18:39:EC:10:BF:66:01:9B:A5:38:67:32:99:14"]
+  }
+}]
