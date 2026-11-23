@@ -4,7 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
-    <title>Quem Saiu?</title>
+    <title>Quem Saiu? – Veja quem não te segue de volta no Instagram</title>
+    <meta name="description" content="Descubra em minutos quem não te segue de volta e quem deixou de te seguir no Instagram. Grátis, sem senha e sem enviar seus dados.">
+    <link rel="canonical" href="https://quemsaiu.app.br/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Quem Saiu?">
+    <meta property="og:title" content="Quem Saiu? – Veja quem não te segue de volta">
+    <meta property="og:description" content="Descubra quem não te segue de volta no Instagram. Grátis e sem senha.">
+    <meta property="og:url" content="https://quemsaiu.app.br/">
+    <meta property="og:image" content="https://quemsaiu.app.br/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png">
@@ -85,6 +98,7 @@
       .brand { min-height: var(--tap); }
       .muted { color: var(--muted); }
       .small { font-size: 13px; }
+      [hidden] { display: none !important; }
       .btn {
         display: inline-flex; align-items: center; justify-content: center; gap: 8px;
         min-height: var(--tap); padding: 0 20px; border: 0; border-radius: var(--pill);
@@ -385,6 +399,7 @@
         <div class="row-actions">
           <a class="btn" href="#rapido">⚡ Começar</a>
           <a class="btn btn--ghost btn--sm" href="#como">Usar o arquivo do Instagram</a>
+          <button class="btn btn--ghost btn--sm" type="button" id="install" hidden>📲 Instalar app</button>
         </div>
         <div class="card preview" aria-hidden="true">
           <div class="preview__head"><span>Não me seguem de volta</span><span>3</span></div>
@@ -580,7 +595,8 @@
     </main>
 
     <footer class="foot wrap">
-      <p>Quem Saiu? • Não é afiliado ao Instagram nem à Meta. • <a href="privacidade.html">Privacidade</a></p>
+      <p>Quem Saiu? • Não é afiliado ao Instagram nem à Meta. • <a href="/privacidade">Privacidade</a></p>
+      <p><a href="/como-ver-quem-nao-segue-de-volta">Como ver quem não te segue de volta</a> • <a href="/como-baixar-dados-instagram">Como baixar seus dados do Instagram</a></p>
     </footer>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -1070,6 +1086,16 @@
           x.addEventListener("click", function () { cp.remove(); history.replaceState(null, "", location.pathname); });
           cp.appendChild(t1); cp.appendChild(t2); cp.appendChild(b); cp.appendChild(x); document.body.appendChild(cp);
         }
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if ("serviceWorker" in navigator) addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
+        var b = document.getElementById("install"), ev = null;
+        addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); ev = e; if (b) b.hidden = false; });
+        addEventListener("appinstalled", function () { if (b) b.hidden = true; });
+        if (b) b.onclick = function () { if (!ev) return; ev.prompt(); ev.userChoice.finally(function () { ev = null; b.hidden = true; }); };
       })();
     </script>
   </body>
