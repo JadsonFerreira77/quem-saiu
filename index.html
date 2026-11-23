@@ -368,7 +368,9 @@
       .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
     </style>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9146893888373149" crossorigin="anonymous"></script>
-</head>
+<script>(function(){try{var q=location.search,r=document.referrer||"",S=sessionStorage;if(/[?&]web=1/.test(q)){S.removeItem("qs_app");}else if(r.indexOf("android-app://")===0){S.setItem("qs_app","1");}if(S.getItem("qs_app")==="1")document.documentElement.classList.add("in-app");}catch(e){}})()</script>
+    <style>.app-only{display:none}.in-app .app-only{display:inline-flex}.in-app .app-card.app-only{display:block}.in-app #rapido,.in-app .web-only,.in-app #install{display:none!important}</style>
+  </head>
   <body>
     <div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
@@ -397,8 +399,9 @@
         <h1 class="grad-text">Quem Saiu?</h1>
         <p class="hero__sub">Descubra em minutos quem não te segue de volta, direto no Instagram. Sem senha.</p>
         <div class="row-actions">
-          <a class="btn" href="#rapido">⚡ Começar</a>
-          <a class="btn btn--ghost btn--sm" href="#como">Usar o arquivo do Instagram</a>
+          <a class="btn web-only" href="#rapido">⚡ Começar</a>
+          <a class="btn app-only" href="#como">⚡ Começar</a>
+          <a class="btn btn--ghost btn--sm web-only" href="#como">Usar o arquivo do Instagram</a>
           <button class="btn btn--ghost btn--sm" type="button" id="install" hidden>📲 Instalar app</button>
         </div>
         <div class="card preview" aria-hidden="true">
@@ -406,6 +409,13 @@
           <div class="prow"><span class="ava" style="background: #6d28d9 linear-gradient(135deg, #6d28d9, #be185d)">A</span><b>@ana.souza</b><span class="tagx">Não te segue</span></div>
           <div class="prow"><span class="ava" style="background: #be185d linear-gradient(135deg, #be185d, #b45309)">J</span><b>@joao_pe</b><span class="tagx">Não te segue</span></div>
           <div class="prow"><span class="ava" style="background: #b45309 linear-gradient(135deg, #b45309, #6d28d9)">C</span><b>@carla.m</b><span class="tagx">Não te segue</span></div>
+        </div>
+      </section>
+
+      <section class="wrap block app-card app-only">
+        <div class="card" style="padding:16px">
+          <p style="margin:0 0 10px">O modo rápido funciona no site, pelo Chrome.</p>
+          <a class="btn btn--ghost btn--sm" href="intent://quemsaiu.app.br/?web=1#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=https%3A%2F%2Fquemsaiu.app.br%2F%3Fweb%3D1;end">Abrir no Chrome</a>
         </div>
       </section>
 
@@ -587,7 +597,7 @@
         <p class="eyebrow">Perguntas</p>
         <h2 class="title">Seus dados não saem do seu aparelho.</h2>
         <div class="faq">
-          <details class="acc card"><summary>O modo rápido é seguro?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Roda só no instagram.com oficial e não envia nada para fora. Tem pausas para o Instagram não limitar sua conta.</div></details>
+          <details class="acc card web-only"><summary>O modo rápido é seguro?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Roda só no instagram.com oficial e não envia nada para fora. Tem pausas para o Instagram não limitar sua conta.</div></details>
           <details class="acc card"><summary>Vocês veem meus dados?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Não. Tudo roda no seu navegador.</div></details>
           <details class="acc card"><summary>Por que não tem login com Instagram?<svg class="acc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></summary><div class="acc__body">Apps que pedem sua senha violam as regras do Instagram e podem bloquear sua conta.</div></details>
         </div>
@@ -1091,6 +1101,7 @@
 
     <script>
       (function () {
+        if (/[?&]web=1/.test(location.search)) addEventListener("load", function () { var r = document.getElementById("rapido"); if (r) r.scrollIntoView(); });
         if ("serviceWorker" in navigator) addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
         var b = document.getElementById("install"), ev = null;
         addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); ev = e; if (b) b.hidden = false; });
